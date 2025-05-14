@@ -1,4 +1,3 @@
-
 let zitate = {
 Goethe: [
 "Was immer du tun kannst oder träumst zu können, beginne es!",
@@ -39,6 +38,10 @@ Nietzsche: [
 "Glaube heißt, nicht wissen wollen, was wahr ist."
 ]
 };
+// Zitate aus Local Storage laden, falls vorhanden
+if (localStorage.getItem("zitate")) {
+    zitate = JSON.parse(localStorage.getItem("zitate"));
+}
     
 ;
 
@@ -77,6 +80,8 @@ function zitatHinzufuegen() {
     let neuesZitat = document.getElementById("neuesZitat").value.trim();
     if (neuesZitat) {
         zitate[autor].push(neuesZitat);
+        // Zitate im Local Storage speichern
+        localStorage.setItem("zitate", JSON.stringify(zitate));
         document.getElementById("neuesZitat").value = "";
         updateZitatListe();
     }
@@ -85,6 +90,8 @@ function zitatHinzufuegen() {
 function loescheZitat(autor, index) {
     zitate[autor].splice(index, 1);
     updateZitatListe();
+    // Aktualisierte Zitate im Local Storage speichern
+    localStorage.setItem("zitate", JSON.stringify(zitate));
 }
 
 function updateZitatListe() {
