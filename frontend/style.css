@@ -1,0 +1,46 @@
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+
+        select, button, input {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .quote-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+            margin-top: 30px;
+            width: 50%;
+        }
+
+        .quote-list {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .quote-item {
+            background: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quote-item button {
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }

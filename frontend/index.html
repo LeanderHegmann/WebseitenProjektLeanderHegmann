@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zitate-Generator</title>
+    <link rel="stylesheet" href="style.css" />
+    <script>
+    const API_BASE_URL = 'http://127.0.0.1:3000/zitate';
+
+    async function ladeZitateVomServer(autor) {
+      const response = await fetch(`${API_BASE_URL}?autor=${encodeURIComponent(autor)}`);
+      return await response.json();
+    }
+
+    async function neuesZitatZumServerHinzufuegen(autor, zitat) {
+      await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ autor, zitat })
+      });
+    }
+  </script>
+    <script src="script.js" defer></script>
+ </head>
+
+<body>
+
+    <h1>Zitate-Generator</h1>
+
+    <label for="autor">Wähle einen Autor:</label>
+    <select id="autor">
+        <option value="Goethe">Johann Wolfgang von Goethe</option>
+        <option value="Schiller">Friedrich Schiller</option>
+        <option value="Nietzsche">Friedrich Nietzsche</option>
+    </select>
+
+    <button onclick="zeigeZitatVomServer()">Zitat anzeigen</button>
+
+    <div class="quote-box" id="zitatBox">
+        <p id="zitatText">Hier erscheint dein Zitat...</p>
+    </div>
+
+    <h2>Neues Zitat hinzufügen</h2>
+    <input type="text" id="neuesZitat" placeholder="Gib ein neues Zitat ein">
+    <button onclick="zitatHinzufuegen()">Hinzufügen</button>
+
+    <h2>Gespeicherte Zitate</h2>
+    <div class="quote-list" id="zitatListe"></div>
+
+   
+
+</body>
+</html>
