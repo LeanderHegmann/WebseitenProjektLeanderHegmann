@@ -1,4 +1,3 @@
-
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -39,8 +38,15 @@
         }
 
         .quote-item button {
-            background: red;
+            background-color: red;
             color: white;
             border: none;
             cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+
+        .quote-item button:hover {
+            background-color: darkred;
         }

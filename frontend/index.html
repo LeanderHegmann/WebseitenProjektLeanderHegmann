@@ -6,7 +6,7 @@
     <title>Zitate-Generator</title>
     <link rel="stylesheet" href="style.css" />
     <script>
-    const API_BASE_URL = 'http://127.0.0.1:3000/zitate';
+    const API_BASE_URL = 'http://localhost:3000/zitate';
 
     async function ladeZitateVomServer(autor) {
       const response = await fetch(`${API_BASE_URL}?autor=${encodeURIComponent(autor)}`);

@@ -2,7 +2,7 @@ console.log("Starte Server");
 
 
 const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("Dadentank.db");
+const db = new sqlite3.Database("backend/Database/Dadentank.db");
 
 // Tabelle erstellen, falls sie nicht existiert
 db.run(`
@@ -52,6 +52,16 @@ app.get("/zitate", (req, res) => {
       return res.status(500).json({ error: "Fehler beim Abrufen der Zitate" });
     }
     res.json(rows);
+  });
+});
+
+// Alle Zitate löschen
+app.delete("/zitate", (req, res) => {
+  db.run("DELETE FROM zitate", [], function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Fehler beim Löschen der Zitate" });
+    }
+    res.status(200).json({ message: "Alle Zitate wurden gelöscht" });
   });
 });
 

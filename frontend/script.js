@@ -1,3 +1,5 @@
+const API_BASE_URL = "http://localhost:3000/zitate";
+
 // Seite lädt → Zitatliste und erstes Zitat anzeigen
 window.onload = async () => {
     await updateZitatListe();
@@ -17,12 +19,12 @@ document.getElementById("neuesZitat").addEventListener("keypress", async functio
 });
 
 async function ladeZitateVomServer(autor) {
-  const response = await fetch(`http://localhost:3000/zitate?autor=${encodeURIComponent(autor)}`);
+  const response = await fetch(`${API_BASE_URL}?autor=${encodeURIComponent(autor)}`);
   return await response.json();
 }
 
 async function neuesZitatZumServerHinzufuegen(autor, zitat) {
-  await fetch('http://localhost:3000/zitate', {
+  await fetch(API_BASE_URL, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ autor, zitat })
@@ -30,7 +32,7 @@ async function neuesZitatZumServerHinzufuegen(autor, zitat) {
 }
 
 async function zitatLoeschenVomServer(id) {
-  await fetch(`http://localhost:3000/zitate?id=${id}`, { method: 'DELETE' });
+  await fetch(`${API_BASE_URL}?id=${id}`, { method: 'DELETE' });
 }
 
 async function zeigeZitat() {
@@ -49,7 +51,7 @@ async function zitatHinzufuegen() {
   const neuesZitat = document.getElementById("neuesZitat").value.trim();
   if (!neuesZitat) return;
 
-  await fetch('http://localhost:3000/zitate', {
+  await fetch(API_BASE_URL, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ autor, zitat: neuesZitat })
