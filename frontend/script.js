@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:3000/zitate";
+if (typeof API_BASE_URL === 'undefined') {
+  const API_BASE_URL = `${window.location.origin}/zitate`;
+}
 
 // Seite lädt → Zitatliste und erstes Zitat anzeigen
 window.onload = async () => {
@@ -32,38 +34,56 @@ async function neuesZitatZumServerHinzufuegen(autor, zitat) {
 }
 
 async function zitatLoeschenVomServer(id) {
-  await fetch(`${API_BASE_URL}?id=${id}`, { method: 'DELETE' });
+  await fetch(`${API_BASE_URL}/${id}`, { method: 'DELETE' });
 }
 
 async function zeigeZitat() {
   const autor = document.getElementById('autor').value;
-  const zitate = await ladeZitateVomServer(autor);
-  if (zitate.length === 0) {
-    document.getElementById("zitatText").innerText = "Keine Zitate vorhanden.";
+  if (!autor) {
+    document.getElementById("zitatText").innerText = "Kein Autor ausgewählt.";
     return;
   }
-  const zufallsIndex = Math.floor(Math.random() * zitate.length);
-  document.getElementById("zitatText").innerText = zitate[zufallsIndex].zitat;
+
+  try {
+    const alleZitate = await ladeZitateVomServer(autor);
+    const gefilterteZitate = alleZitate.filter(z => z.autor === autor);
+
+    if (gefilterteZitate.length === 0) {
+      document.getElementById("zitatText").innerText = "Kein Zitat gefunden.";
+      return;
+    }
+
+    const zufall = Math.floor(Math.random() * gefilterteZitate.length);
+    const zitatObj = gefilterteZitate[zufall];
+    document.getElementById("zitatText").innerText = zitatObj.zitat;
+  } catch (error) {
+    console.error("Fehler beim Abrufen des Zitats:", error);
+    document.getElementById("zitatText").innerText = "Fehler beim Laden des Zitats.";
+  }
 }
 
 async function zitatHinzufuegen() {
   const autor = document.getElementById("autor").value;
   const neuesZitat = document.getElementById("neuesZitat").value.trim();
   if (!neuesZitat) return;
-
-  await fetch(API_BASE_URL, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ autor, zitat: neuesZitat })
-  });
-
+  try {
+    await neuesZitatZumServerHinzufuegen(autor, neuesZitat);
+  } catch (error) {
+    console.error("Fehler beim Hinzufügen:", error);
+  }
   document.getElementById("neuesZitat").value = "";
   await updateZitatListe();
 }
 
 async function loescheZitat(id) {
-  await zitatLoeschenVomServer(id);
-  await updateZitatListe();
+  if (!id) return;
+  try {
+    await zitatLoeschenVomServer(id);
+    await updateZitatListe();
+    await zeigeZitat();
+  } catch (error) {
+    console.error("Fehler beim Löschen:", error);
+  }
 }
 
 async function updateZitatListe() {
@@ -71,17 +91,34 @@ async function updateZitatListe() {
   const liste = document.getElementById("zitatListe");
   liste.innerHTML = "";
 
+  if (!autor) {
+    return;
+  }
+
   const zitate = await ladeZitateVomServer(autor);
-  zitate.forEach(e => {
+  const gefiltert = zitate.filter(z => z.autor === autor);
+
+  gefiltert.forEach(e => {
     let item = document.createElement("div");
     item.className = "quote-item";
 
     let html = `<span>${e.zitat}</span>`;
-    if (e.id !== undefined) {
-      html += ` <button onclick="loescheZitat(${e.id})">Löschen</button>`;
+    if (e.id !== undefined && e.id !== null) {
+      html += ` <button data-id="${e.id}" class="loesch-button">Löschen</button>`;
     }
 
     item.innerHTML = html;
     liste.appendChild(item);
   });
+
+  document.querySelectorAll(".loesch-button").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = button.getAttribute("data-id");
+      await loescheZitat(id);
+      await zeigeZitat();
+    });
+  });
 }
+
+window.zitatHinzufuegen = zitatHinzufuegen;
+window.zeigeZitatVomServer = zeigeZitat;
